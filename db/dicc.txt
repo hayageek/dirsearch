@@ -1,3 +1,4 @@
+static-files
 actuator
 actuator/auditevents
 actuator/beans
