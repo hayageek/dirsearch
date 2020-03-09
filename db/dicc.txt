@@ -1,4 +1,11 @@
-static-files
+registry/
+artifacts/
+artifactory/
+artifactory/docker/
+api/v1/
+api/v2/
+npm
+static-files/
 actuator
 actuator/auditevents
 actuator/beans
