@@ -4,8 +4,13 @@ artifactory/
 artifactory/docker/
 api/v1/
 api/v2/
+api/v3/
 api/v1/endpoints
 api/v1/pods
+api/v2/endpoints
+api/v2/pods
+api/v3/endpoints
+api/v3/pods
 npm
 static-files/
 actuator
