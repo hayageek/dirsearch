@@ -28,6 +28,8 @@ import urllib.request
 import thirdparty.requests as requests
 from .RequestException import *
 from .Response import *
+from requests.adapters import HTTPAdapter
+from requests.packages.urllib3.util.retry import Retry
 
 
 class Requester(object):
@@ -98,7 +100,7 @@ class Requester(object):
         self.redirect = redirect
         self.randomAgents = None
         self.requestByHostname = requestByHostname
-        self.session = requests.Session()
+        self.session = self.requests_retry_session()
 
     def setHeader(self, header, content):
         self.headers[header] = content
@@ -108,6 +110,20 @@ class Requester(object):
 
     def unsetRandomAgents(self):
         self.randomAgents = None
+
+    def requests_retry_session(self):
+        session = requests.Session()
+        retryCount = 10
+        retry = Retry(
+            total=retryCount,
+            read=retryCount,
+            connect=retryCount,
+            backoff_factor = 0.8,
+            status_forcelist=(429,500, 502, 504),
+        )
+        adapter = HTTPAdapter(max_retries=retry)
+        self.session.mount('http://', adapter)
+        self.session.mount('https://', adapter)
 
     def request(self, path):
         i = 0
