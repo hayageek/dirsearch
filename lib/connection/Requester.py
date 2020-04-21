@@ -44,7 +44,7 @@ class Requester(object):
 
     def __init__(self, url, cookie=None, useragent=None,
                  maxPool=1, maxRetries=5, delay=0, timeout=30,
-                 ip=None, proxy=None, redirect=False, requestByHostname=False, httpmethod="get"):
+                 ip=None, proxy=None, redirect=False, requestByHostname=False, httpmethod="get",retryMaxCount=10,retryErrorCodes='429',retryBackOff=0.8):
 
         self.httpmethod = httpmethod
 
@@ -100,7 +100,11 @@ class Requester(object):
         self.redirect = redirect
         self.randomAgents = None
         self.requestByHostname = requestByHostname
+        self.retryMaxCount = retryMaxCount
+        self.retryErrorCodes = retryErrorCodes
+        self.retryBackOff = retryBackOff
         self.session = self.requests_retry_session()
+
 
     def setHeader(self, header, content):
         self.headers[header] = content
@@ -113,17 +117,21 @@ class Requester(object):
 
     def requests_retry_session(self):
         session = requests.Session()
-        retryCount = 10
+        retryCount = int(self.retryMaxCount)
+        retryBackOff = float(self.retryBackOff)
+        statusCodes = list(map(int, self.retryErrorCodes.split(',')))
+        print(list(statusCodes));
         retry = Retry(
             total=retryCount,
             read=retryCount,
             connect=retryCount,
-            backoff_factor = 0.8,
-            status_forcelist=(429,500, 502, 504),
+            backoff_factor = retryBackOff,
+            status_forcelist=statusCodes,
         )
         adapter = HTTPAdapter(max_retries=retry)
-        self.session.mount('http://', adapter)
-        self.session.mount('https://', adapter)
+        session.mount('http://', adapter)
+        session.mount('https://', adapter)
+        return session
 
     def request(self, path):
         i = 0

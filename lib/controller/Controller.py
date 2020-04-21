@@ -61,6 +61,8 @@ class Controller(object):
 
         self.recursive_level_max = self.arguments.recursive_level_max
 
+        print(arguments)
+
         if self.arguments.httpmethod.lower() not in ["get", "head", "post"]:
             self.output.error("Inavlid http method!")
             exit(1)
@@ -140,7 +142,11 @@ class Controller(object):
                                                    ip=self.arguments.ip, proxy=self.arguments.proxy,
                                                    redirect=self.arguments.redirect,
                                                    requestByHostname=self.arguments.requestByHostname,
-                                                   httpmethod=self.httpmethod)
+                                                   httpmethod=self.httpmethod, 
+                                                   retryMaxCount=self.arguments.retryMaxCount,
+                                                   retryErrorCodes=self.arguments.retryErrorCodes,
+                                                   retryBackOff=self.arguments.retryBackOff
+                                                   )
                         self.requester.request("/")
 
                     except RequestException as e:

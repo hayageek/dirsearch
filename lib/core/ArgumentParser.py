@@ -158,6 +158,12 @@ class ArgumentParser(object):
         self.recursive = options.recursive
         self.suppressEmpty = options.suppressEmpty
 
+        self.retryMaxCount = options.retryMaxCount
+        self.retryErrorCodes =options.retryErrorCodes
+        self.retryBackOff = options.retryBackOff
+
+
+
         if options.scanSubdirs is not None:
             self.scanSubdirs = list(oset([subdir.strip() for subdir in options.scanSubdirs.split(',')]))
 
@@ -319,6 +325,11 @@ class ArgumentParser(object):
         reports.add_option('--plain-text-report', action='store',
                            help="Found paths with status codes", dest='plainTextOutputFile', default=None)
         reports.add_option('--json-report', action='store', dest='jsonOutputFile', default=None)
+        reports.add_option('--retry-error-codes', action='store', dest='retryErrorCodes', default='429')
+        reports.add_option('--retry-max-count', action='store', dest='retryMaxCount', default=10)
+        reports.add_option('--retry-backoff', action='store', dest='retryBackOff', default=0.8)
+
+
         parser.add_option_group(mandatory)
         parser.add_option_group(dictionary)
         parser.add_option_group(general)

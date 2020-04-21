@@ -12,6 +12,9 @@ artifacts/
 artifactory/
 artifactory/api/plugins/
 artifactory/docker/
+api/v1/console
+api/v2/console
+api/v3/console
 api/v1/
 api/v2/
 api/v3/
